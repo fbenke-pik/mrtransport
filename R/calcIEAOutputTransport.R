@@ -16,11 +16,12 @@ calcIEAOutputTransport <- function() {
   data <- calcOutput("IeaEnergyBalances", ieaVersion = "default", aggregate = FALSE)
 
   ieamatch <- toolGetMapping(type = "sectoral", name = "structuremappingIO_outputs.csv",
-                             where = "mrcommonsenergy")
+                             where = "mrcommonsenergy", returnPathOnly = TRUE)
 
   target <- c("REMINDitems_in", "REMINDitems_out", "REMINDitems_tech", "iea_product", "iea_flows")
 
   ieamatch <- ieamatch %>%
+    read.csv2(stringsAsFactors = FALSE, na.strings = "") %>%
     dplyr::select(tidyselect::all_of(c("iea_product", "iea_flows", "Weight", target))) %>%
     stats::na.omit() %>%
     # select only fuel types that are represented in EDGE-T
